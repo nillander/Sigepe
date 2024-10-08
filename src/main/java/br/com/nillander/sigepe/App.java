@@ -1,4 +1,4 @@
-package br.com.nillander;
+package br.com.nillander.sigepe;
 
 public class App {
 

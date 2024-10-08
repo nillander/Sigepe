@@ -1,0 +1,48 @@
+{
+    // Use o IntelliSense para saber mais sobre os atributos possíveis.
+    // Focalizar para exibir as descrições dos atributos existentes.
+    // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "br.com.nillander.sigepe.App",
+            "projectName": "Sigepe",
+            "vmArgs": "-Dfile.encoding=UTF-8",
+            "console": "internalConsole",
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": false,
+        },
+        {
+            "type": "java",
+            "name": "Debug Project", // Depuração do projeto Java
+            "request": "launch",
+            "mainClass": "br.com.nillander.App",
+            "projectName": "Sigepe",
+            "vmArgs": "-Dfile.encoding=UTF-8",
+            "console": "internalConsole", // Console interno do VSCode
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": true // A depuração para na primeira linha da classe main
+        },
+        {
+            "name": "Build with mvn clean package",
+            "type": "java",
+            "request": "launch",
+            "preLaunchTask": "Build Executable (mvn clean package)", // Primeiro rodamos o Maven
+            // "postDebugTask": "Open Folder After Build", // Depois abrimos a pasta
+            "mainClass": "br.com.nillander.App",
+            "projectName": "Sigepe",
+            "vmArgs": "-Dfile.encoding=UTF-8",
+            "console": "internalConsole",
+            "cwd": "${workspaceFolder}"
+        },
+    ]
+}

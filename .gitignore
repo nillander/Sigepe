@@ -10,7 +10,6 @@ Thumbs.db
 
 # Configurações de IDEs (NetBeans, VSCode, etc.)
 /nbproject/private/
-/.vscode/
 /.idea/
 /*.iml
 

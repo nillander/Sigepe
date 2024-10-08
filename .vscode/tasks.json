@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Executable (mvn clean package)", // Nome da task de build
+            "type": "shell", // Usa shell em vez de processo nativo
+            "command": "mvn clean package", // Comando direto do Maven
+            "group": {
+                "kind": "build",
+                "isDefault": true,
+            },
+            "problemMatcher": [],
+            "detail": "Build the project using Maven clean package",
+            "options": {
+                "cwd": "${workspaceFolder}", // Diretório de trabalho do projeto
+            },
+        },
+        {
+            "label": "Open Folder After Build", // Nome da task para abrir a pasta
+            "type": "shell",
+            "command": "explorer.exe .", // Para Windows (substitua conforme seu sistema)
+            "group": "none",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}/target" // Diretório raiz do projeto
+            },
+        },
+    ]
+}

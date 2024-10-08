@@ -1,4 +1,4 @@
-package br.com.nillander;
+package br.com.nillander.sigepe;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
