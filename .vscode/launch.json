@@ -19,7 +19,7 @@
             "vmArgs": "-Dfile.encoding=UTF-8",
             "console": "internalConsole",
             "cwd": "${workspaceFolder}",
-            "stopOnEntry": false,
+            "stopOnEntry": false
         },
         {
             "type": "java",
@@ -36,13 +36,13 @@
             "name": "Build with mvn clean package",
             "type": "java",
             "request": "launch",
-            "preLaunchTask": "Build Executable (mvn clean package)", // Primeiro rodamos o Maven
-            // "postDebugTask": "Open Folder After Build", // Depois abrimos a pasta
+            "preLaunchTask": "Build Executable (mvn clean package)",
+            // "postDebugTask": "Open Folder After Build",
             "mainClass": "br.com.nillander.App",
             "projectName": "Sigepe",
             "vmArgs": "-Dfile.encoding=UTF-8",
             "console": "internalConsole",
             "cwd": "${workspaceFolder}"
-        },
+        }
     ]
 }
