@@ -1,0 +1,41 @@
+# Ignore arquivos e diretórios do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Ignore diretórios de build do Maven
+/target/
+
+# Arquivos de logs
+*.log
+
+# Configurações de IDEs (NetBeans, VSCode, etc.)
+/nbproject/private/
+/.vscode/
+/.idea/
+/*.iml
+
+# Arquivos de configuração locais
+*.properties
+*.env
+
+# Arquivos de chaves e senhas (caso tenha)
+*.keystore
+*.p12
+*.pem
+
+# Maven
+.mvn/
+!**/src/main/**/application.properties
+
+# Arquivos de cache
+*.class
+*.war
+*.ear
+
+# Arquivos de pacotes e dependências locais
+*.jar
+*.war
+*.ear
+
+# Arquivos temporários do sistema operacional
+*.swp
