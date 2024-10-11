@@ -14,8 +14,8 @@ Thumbs.db
 /*.iml
 
 # Arquivos de configuração locais
-*.properties
-*.env
+# *.properties
+# *.env
 
 # Arquivos de chaves e senhas (caso tenha)
 *.keystore
