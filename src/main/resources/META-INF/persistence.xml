@@ -9,6 +9,7 @@
 
         <!-- Classe de entidade gerenciada pelo JPA -->
         <class>br.com.nillander.sigepe.User</class>
+        <class>br.com.nillander.sigepe.usuario.model.Usuario</class>
 
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/sgpld_jpa"/>
