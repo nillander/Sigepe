@@ -1,10 +1,11 @@
 package br.com.nillander.sigepe.autenticacao.view;
 
+import javax.swing.ImageIcon;
+
 import com.formdev.flatlaf.FlatClientProperties;
 
-import br.com.nillander.sigepe.usuario.controller.UsuarioController;
-import br.com.nillander.sigepe.usuario.model.UsuarioRepository;
-import br.com.nillander.sigepe.usuario.view.UsuarioForm;
+import br.com.nillander.sigepe.UsuarioCad;
+import br.com.nillander.sigepe.compartilhado.services.ImageService;
 
 public class Autenticacao extends javax.swing.JFrame {
 
@@ -13,14 +14,8 @@ public class Autenticacao extends javax.swing.JFrame {
                 init();
         }
 
-        // <editor-fold defaultstate="collapsed" desc="Generated
-        // <editor-fold defaultstate="collapsed" desc="Generated
-        // <editor-fold defaultstate="collapsed" desc="Generated
-        // <editor-fold defaultstate="collapsed" desc="Generated
-        // <editor-fold defaultstate="collapsed" desc="Generated
-        // <editor-fold defaultstate="collapsed" desc="Generated
-        // <editor-fold defaultstate="collapsed" desc="Generated
-        // Code">//GEN-BEGIN:initComponents
+        // <editor-fold defaultstate="collapsed"
+        // desc="GeneratedCode">//GEN-BEGIN:initComponents
         private void initComponents() {
 
                 jPanel1 = new javax.swing.JPanel();
@@ -61,7 +56,8 @@ public class Autenticacao extends javax.swing.JFrame {
                 jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
                 jLabel4.setText("Não possui uma conta? Criar conta");
 
-                jlLogotipo.setText("jlLogotipo");
+                jlLogotipo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cms_logo.png"))); // NOI18N
+                jlLogotipo.setIcon(ImageService.getInstance().resizeImageIcon((ImageIcon) jlLogotipo.getIcon(), 278));
 
                 javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
                 jPanel1.setLayout(jPanel1Layout);
@@ -86,46 +82,56 @@ public class Autenticacao extends javax.swing.JFrame {
                                                                                 .addComponent(jLabel4,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 280, Short.MAX_VALUE))
-                                                                .addGap(32, 32, 32)
+                                                                .addPreferredGap(
+                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                                                25, Short.MAX_VALUE)
                                                                 .addComponent(jlLogotipo,
-                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                392, Short.MAX_VALUE)));
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                278,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(25, 25, 25)));
                 jPanel1Layout.setVerticalGroup(
                                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                                                 .addGap(19, 19, 19)
-                                                                .addComponent(lbTitle)
-                                                                .addPreferredGap(
-                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(jLabel1)
-                                                                .addPreferredGap(
-                                                                                javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                                .addComponent(jLabel2)
-                                                                .addPreferredGap(
-                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(txtUsername,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(
-                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(jLabel3)
-                                                                .addPreferredGap(
-                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(txtPassword,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(
-                                                                                javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                                .addComponent(jCheckBox1)
-                                                                .addGap(18, 18, 18)
-                                                                .addComponent(jbuttonEntrar)
-                                                                .addGap(18, 18, 18)
-                                                                .addComponent(jLabel4)
-                                                                .addContainerGap(123, Short.MAX_VALUE))
-                                                .addComponent(jlLogotipo, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+                                                                .addGroup(jPanel1Layout.createParallelGroup(
+                                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                .addComponent(jlLogotipo,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                278,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addGroup(jPanel1Layout
+                                                                                                .createSequentialGroup()
+                                                                                                .addComponent(lbTitle)
+                                                                                                .addPreferredGap(
+                                                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                .addComponent(jLabel1)
+                                                                                                .addPreferredGap(
+                                                                                                                javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                                                .addComponent(jLabel2)
+                                                                                                .addPreferredGap(
+                                                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                .addComponent(txtUsername,
+                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                .addPreferredGap(
+                                                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                .addComponent(jLabel3)
+                                                                                                .addPreferredGap(
+                                                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                .addComponent(txtPassword,
+                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                .addPreferredGap(
+                                                                                                                javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                                                .addComponent(jCheckBox1)
+                                                                                                .addGap(18, 18, 18)
+                                                                                                .addComponent(jbuttonEntrar)
+                                                                                                .addGap(18, 18, 18)
+                                                                                                .addComponent(jLabel4)))
+                                                                .addContainerGap(15, Short.MAX_VALUE)));
 
                 javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
                 getContentPane().setLayout(layout);
@@ -137,7 +143,7 @@ public class Autenticacao extends javax.swing.JFrame {
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addContainerGap(25, Short.MAX_VALUE)));
+                                                                .addGap(25, 25, 25)));
                 layout.setVerticalGroup(
                                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(layout.createSequentialGroup()
@@ -146,14 +152,15 @@ public class Autenticacao extends javax.swing.JFrame {
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addContainerGap(25, Short.MAX_VALUE)));
+                                                                .addGap(25, 25, 25)));
 
                 pack();
-        }// </editor-fold>//GEN-END:initComponents
+        }
+        // </editor-fold>//GEN-END:initComponents
 
         private void jbuttonEntrarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jbuttonEntrarActionPerformed
-                UsuarioForm usuarioForm = new UsuarioForm();
-                usuarioForm.setVisible(true);
+                UsuarioCad usuarioCad = new UsuarioCad("autenticacao");
+                usuarioCad.setVisible(true);
         }// GEN-LAST:event_jbuttonEntrarActionPerformed
 
         private static Autenticacao instance = null;
@@ -164,9 +171,6 @@ public class Autenticacao extends javax.swing.JFrame {
                 }
                 return instance;
         }
-
-        private UsuarioRepository usuarioRepository = new UsuarioRepository();
-        private UsuarioForm usuarioForm = new UsuarioForm();
 
         private void init() {
                 txtUsername.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Digite seu e-mail");
@@ -181,8 +185,6 @@ public class Autenticacao extends javax.swing.JFrame {
 
                 configurarFrame();
 
-                UsuarioController usuarioController = new UsuarioController(usuarioForm, usuarioRepository);
-                usuarioForm.setVisible(true);
         }
 
         private void configurarFrame() {

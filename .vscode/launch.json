@@ -23,21 +23,20 @@
         },
         {
             "type": "java",
-            "name": "Debug Project", // Depuração do projeto Java
+            "name": "Debug Project",
             "request": "launch",
             "mainClass": "br.com.nillander.App",
             "projectName": "Sigepe",
             "vmArgs": "-Dfile.encoding=UTF-8",
-            "console": "internalConsole", // Console interno do VSCode
+            "console": "internalConsole",
             "cwd": "${workspaceFolder}",
-            "stopOnEntry": true // A depuração para na primeira linha da classe main
+            "stopOnEntry": true
         },
         {
             "name": "Build with mvn clean package",
             "type": "java",
             "request": "launch",
             "preLaunchTask": "Build Executable (mvn clean package)",
-            // "postDebugTask": "Open Folder After Build",
             "mainClass": "br.com.nillander.App",
             "projectName": "Sigepe",
             "vmArgs": "-Dfile.encoding=UTF-8",

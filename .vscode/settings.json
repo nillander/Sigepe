@@ -1,3 +1,23 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false,
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-17",
+            "path": "C:\\Program Files\\Java\\jdk-17.0.12",
+            "default": true
+        },
+        // {
+        //     "name": "JavaSE-11",
+        //     "path": "C:\\Program Files\\Java\\jdk-11.0.17",
+        //     "default": false
+        // },
+        // {
+        //     "name": "JavaSE-1.8",
+        //     "path": "C:\\Program Files\\Java\\jdk1.8.0_291",
+        //     "default": false
+        // }
+    ]
 }

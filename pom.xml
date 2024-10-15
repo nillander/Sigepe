@@ -6,6 +6,16 @@
     <artifactId>Sigepe</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
+    <properties>
+        <java.version>17</java.version>
+        <spring-boot.version>3.3.4</spring-boot.version>
+        <!-- Define a versão do source -->
+        <maven.compiler.source>17</maven.compiler.source>
+        <!-- Define a versão do target -->
+        <maven.compiler.target>17</maven.compiler.target>
+        <!-- Define a codificação UTF-8 -->
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+    </properties>
     <!-- FlatLaf -->
     <repositories>
         <repository>
@@ -15,18 +25,20 @@
     </repositories>
 
     <dependencies>
-        <!-- JPA (EclipseLink como implementação) -->
+        <!-- Dependências do Spring Boot e JPA -->
         <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>eclipselink</artifactId>
-            <version>2.7.7</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>${spring-boot.version}</version>
         </dependency>
         <!-- Driver JDBC do MySQL -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.30</version>
+            <version>LATEST</version>
         </dependency>
+
+        <!-- Dependências do Spring Boot para testes -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -81,18 +93,26 @@
             <systemPath>${basedir}/library/swing-toast-notifications-1.0.1.jar</systemPath>
         </dependency>
 
+        <!-- Jakarta Persistence API -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Plugin para compilar o código Java -->
+            <!-- Plugin de Compilação -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>17</source>
+                    <target>17</target>
+                    <!-- Garante a codificação UTF-8 -->
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
 
