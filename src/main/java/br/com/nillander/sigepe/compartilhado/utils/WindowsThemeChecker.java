@@ -1,4 +1,4 @@
-package br.com.nillander.sigepe;
+package br.com.nillander.sigepe.compartilhado.utils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

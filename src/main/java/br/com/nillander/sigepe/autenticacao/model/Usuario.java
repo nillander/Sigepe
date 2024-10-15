@@ -1,4 +1,4 @@
-package br.com.nillander.sigepe;
+package br.com.nillander.sigepe.autenticacao.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -4,7 +4,6 @@ import javax.swing.ImageIcon;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
-import br.com.nillander.sigepe.UsuarioCad;
 import br.com.nillander.sigepe.compartilhado.services.ImageService;
 
 public class Autenticacao extends javax.swing.JFrame {

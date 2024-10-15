@@ -1,4 +1,4 @@
-package br.com.nillander.sigepe;
+package br.com.nillander.sigepe.autenticacao.model;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
