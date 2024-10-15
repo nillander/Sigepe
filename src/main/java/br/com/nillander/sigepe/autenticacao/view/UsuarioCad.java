@@ -3,6 +3,7 @@ package br.com.nillander.sigepe.autenticacao.view;
 import javax.swing.*;
 
 import br.com.nillander.sigepe.App;
+import br.com.nillander.sigepe.autenticacao.model.Usuario;
 import br.com.nillander.sigepe.autenticacao.model.UsuarioRepository;
 
 import java.awt.event.ActionEvent;

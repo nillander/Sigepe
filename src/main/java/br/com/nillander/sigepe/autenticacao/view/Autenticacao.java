@@ -1,9 +1,17 @@
 package br.com.nillander.sigepe.autenticacao.view;
 
+import java.util.Optional;
+
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
+import br.com.nillander.sigepe.App;
+import br.com.nillander.sigepe.autenticacao.model.Usuario;
+import br.com.nillander.sigepe.autenticacao.model.UsuarioRepository;
 import br.com.nillander.sigepe.compartilhado.services.ImageService;
 
 public class Autenticacao extends javax.swing.JFrame {
@@ -157,9 +165,37 @@ public class Autenticacao extends javax.swing.JFrame {
         }
         // </editor-fold>//GEN-END:initComponents
 
+        @Autowired
+        private UsuarioRepository usuarioRepository;
+
         private void jbuttonEntrarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jbuttonEntrarActionPerformed
                 UsuarioCad usuarioCad = new UsuarioCad("autenticacao");
                 usuarioCad.setVisible(true);
+
+                String email = txtUsername.getText();
+                String senha = new String(txtPassword.getPassword()); // Converte o array de char em String
+
+                // Valida se os campos estão preenchidos
+                if (email.isEmpty() || senha.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.", "Erro",
+                                        JOptionPane.ERROR_MESSAGE);
+                        return;
+                }
+
+                // Busca o usuário no banco de dados usando o repositório
+                usuarioRepository = App.getInstance().getContext().getBean(UsuarioRepository.class);
+                Optional<Usuario> usuarioOpt = usuarioRepository.findByEmailAndSenha(email, senha);
+
+                // Verifica se o usuário foi encontrado
+                if (usuarioOpt.isPresent()) {
+                        JOptionPane.showMessageDialog(this, "Login realizado com sucesso!", "Sucesso",
+                                        JOptionPane.INFORMATION_MESSAGE);
+                        // Aqui você pode prosseguir para a próxima janela ou funcionalidade do sistema
+                } else {
+                        JOptionPane.showMessageDialog(this, "Credenciais inválidas. Tente novamente.", "Erro",
+                                        JOptionPane.ERROR_MESSAGE);
+                }
+
         }// GEN-LAST:event_jbuttonEntrarActionPerformed
 
         private static Autenticacao instance = null;

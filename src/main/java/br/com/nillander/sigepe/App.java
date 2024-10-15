@@ -10,6 +10,8 @@ import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import br.com.nillander.sigepe.autenticacao.view.Autenticacao;
+import br.com.nillander.sigepe.compartilhado.utils.WindowsThemeChecker;
+
 import javax.swing.*;
 import java.awt.*;
 
