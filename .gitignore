@@ -38,3 +38,6 @@ Thumbs.db
 
 # Arquivos temporários do sistema operacional
 *.swp
+
+# Arquivo compactado do projeto
+/Sigepe.zip

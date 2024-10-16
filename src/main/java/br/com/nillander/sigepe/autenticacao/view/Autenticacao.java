@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.time.LocalDateTime;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
@@ -13,6 +13,7 @@ import br.com.nillander.sigepe.App;
 import br.com.nillander.sigepe.autenticacao.model.Usuario;
 import br.com.nillander.sigepe.autenticacao.model.UsuarioRepository;
 import br.com.nillander.sigepe.compartilhado.services.ImageService;
+import br.com.nillander.sigepe.compartilhado.utils.Md5;
 
 public class Autenticacao extends javax.swing.JFrame {
 
@@ -165,15 +166,18 @@ public class Autenticacao extends javax.swing.JFrame {
         }
         // </editor-fold>//GEN-END:initComponents
 
-        @Autowired
-        private UsuarioRepository usuarioRepository;
-
         private void jbuttonEntrarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jbuttonEntrarActionPerformed
+                if (txtUsername.getText().isEmpty()) {
+                        txtUsername.setText("nillander@live.com");
+                        txtPassword.setText("teste123");
+                }
+
                 UsuarioCad usuarioCad = new UsuarioCad("autenticacao");
                 usuarioCad.setVisible(true);
 
                 String email = txtUsername.getText();
                 String senha = new String(txtPassword.getPassword()); // Converte o array de char em String
+                senha = Md5.hash(senha); // Gera o hash MD5 da senha
 
                 // Valida se os campos estão preenchidos
                 if (email.isEmpty() || senha.isEmpty()) {
@@ -183,12 +187,20 @@ public class Autenticacao extends javax.swing.JFrame {
                 }
 
                 // Busca o usuário no banco de dados usando o repositório
-                usuarioRepository = App.getInstance().getContext().getBean(UsuarioRepository.class);
+                UsuarioRepository usuarioRepository = App.getInstance().getContext().getBean(UsuarioRepository.class);
                 Optional<Usuario> usuarioOpt = usuarioRepository.findByEmailAndSenha(email, senha);
 
                 // Verifica se o usuário foi encontrado
                 if (usuarioOpt.isPresent()) {
+                        Usuario usuario = usuarioOpt.get();
+
+                        usuario.setAutenticadoEm(LocalDateTime.now());
+                        usuarioRepository.save(usuario);
                         JOptionPane.showMessageDialog(this, "Login realizado com sucesso!", "Sucesso",
+                                        JOptionPane.INFORMATION_MESSAGE);
+
+                        usuarioRepository.softDeleteById(usuario.getId(), "3");
+                        JOptionPane.showMessageDialog(this, "Usuário Excluído!", "Exclusão",
                                         JOptionPane.INFORMATION_MESSAGE);
                         // Aqui você pode prosseguir para a próxima janela ou funcionalidade do sistema
                 } else {

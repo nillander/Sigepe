@@ -47,8 +47,12 @@ public class App {
 
         UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 13));
 
-        context = SpringApplication.run(App.class, args);
-
-        EventQueue.invokeLater(() -> Autenticacao.getInstance().setVisible(true));
+        try {
+            context = SpringApplication.run(App.class, args);
+            EventQueue.invokeLater(() -> Autenticacao.getInstance().setVisible(true));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Tente verificar a execução do banco de dados.\n\n" + e.getMessage(),
+                    "Erro ao iniciar aplicação", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
