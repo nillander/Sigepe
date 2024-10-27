@@ -100,8 +100,8 @@ public class PanelUsuarios extends javax.swing.JPanel {
         // Atualiza o labelResultados com a quantidade de usuários
         labelValueResultados.setText(String.valueOf(usuarios.size()));
 
-        // Adiciona um listener para monitorar edições na tabela
-        model.addTableModelListener(new TableModelListener() {
+        // Função para atualizar célula e gerenciar o listener
+        TableModelListener listener = new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
                 int row = e.getFirstRow();
@@ -141,26 +141,16 @@ public class PanelUsuarios extends javax.swing.JPanel {
                             // Se o valor não mudou, cancela a operação
                             return;
                         }
-
-                        // Remover temporariamente o listener antes de atualizar a célula
-                        model.removeTableModelListener(this);
-
                         if (selectedDate != null) {
                             // Converter Date para LocalDateTime se uma data foi selecionada ou confirmada
                             LocalDateTime acessoLimite = LocalDateTime.ofInstant(selectedDate.toInstant(), ZoneId.systemDefault());
                             usuario.setAcessoLimite(acessoLimite);
-
-                            // Usar o helper DataFormatacao para exibir a data formatada na tabela
-                            model.setValueAt(DataFormatacao.apenasData(acessoLimite), row, column);
-
+                            atualizarCelulaTabela(model, DataFormatacao.apenasData(acessoLimite), row, column, this);
                         } else {
                             // Define o campo como null no banco de dados e exibe como vazio na tabela
                             usuario.setAcessoLimite(null);
-                            model.setValueAt("", row, column);
+                            atualizarCelulaTabela(model, "", row, column, this);
                         }
-
-                        // Re-adicionar o listener
-                        model.addTableModelListener(this);
                         break;
                     case "Email":
                         String novoEmail = (String) newValue;
@@ -169,16 +159,12 @@ public class PanelUsuarios extends javax.swing.JPanel {
                         Optional<Usuario> usuarioExistenteOpt = usuarioRepository.findByEmail(novoEmail);
                         if (usuarioExistenteOpt.isPresent() && !usuarioExistenteOpt.get().getId().equals(usuarioId)) {
                             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "Já existe um usuário com este email.");
-
-                            // Remover temporariamente o listener antes de restaurar o valor
-                            model.removeTableModelListener(this);
-
-                            // Restaurar o valor original na tabela
-                            model.setValueAt(usuario.getEmail(), row, column);
-
-                            // Re-adicionar o listener
-                            model.addTableModelListener(this);
-                            return; // Interrompe a atualização
+                            atualizarCelulaTabela(model, usuario.getEmail(), row, column, this);
+                            return;
+                        }
+                        if (usuarioExistenteOpt.isPresent() && usuarioExistenteOpt.get().getId().equals(usuarioId)) {
+                            atualizarCelulaTabela(model, usuario.getEmail(), row, column, this);
+                            return;
                         }
 
                         usuario.setEmail(novoEmail);
@@ -186,29 +172,20 @@ public class PanelUsuarios extends javax.swing.JPanel {
                     case "Nível":
                         if (newValue == null || ((String) newValue).trim().isEmpty()) {
                             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "O campo Nível não pode ser nulo.");
-                            model.removeTableModelListener(this);
-                            model.setValueAt(usuario.getNivel(), row, column);
-                            model.addTableModelListener(this);
+                            atualizarCelulaTabela(model, usuario.getNivel(), row, column, this);
                             return;
                         }
                         try {
                             int nivel = Integer.parseInt((String) newValue);
                             if (nivel < 0) {
                                 Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "O valor para Nível deve ser maior ou igual a zero.");
-                                model.removeTableModelListener(this);
-                                model.setValueAt(usuario.getNivel(), row, column);
-                                model.addTableModelListener(this);
+                                atualizarCelulaTabela(model, usuario.getNivel(), row, column, this);
                                 return;
                             }
                             usuario.setNivel(nivel);
-                            model.removeTableModelListener(this);
-                            model.setValueAt(usuario.getNivel(), row, column);
-                            model.addTableModelListener(this);
                         } catch (NumberFormatException ex) {
                             Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "Valor inválido para o campo Nível. Insira um número.");
-                            model.removeTableModelListener(this);
-                            model.setValueAt(usuario.getNivel(), row, column);
-                            model.addTableModelListener(this);
+                            atualizarCelulaTabela(model, usuario.getNivel(), row, column, this);
                             return;
                         }
                         break;
@@ -224,18 +201,14 @@ public class PanelUsuarios extends javax.swing.JPanel {
                     case "Usos":
                         // Permitir valores nulos para a coluna Usos
                         if (newValue == null || ((String) newValue).trim().isEmpty()) {
-                            usuario.setUsos(null); // Define o campo como null
+                            usuario.setUsos(null);
                         } else {
                             try {
                                 // Converter o valor para Integer
                                 usuario.setUsos(Integer.parseInt((String) newValue));
                             } catch (NumberFormatException ex) {
                                 Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "Valor inválido para o campo Usos. Insira um número.");
-
-                                // Restaurar o valor original se a conversão falhar
-                                model.removeTableModelListener(this);
-                                model.setValueAt(usuario.getUsos(), row, column);
-                                model.addTableModelListener(this);
+                                atualizarCelulaTabela(model, usuario.getUsos(), row, column, this);
                                 return;
                             }
                         }
@@ -244,11 +217,7 @@ public class PanelUsuarios extends javax.swing.JPanel {
                         // Criptografa a senha com MD5 e atualiza o objeto Usuario
                         String senhaHash = Md5.hash((String) newValue);
                         usuario.setSenha(senhaHash);
-
-                        // Remove temporariamente o listener antes de atualizar a célula
-                        model.removeTableModelListener(this);
-                        model.setValueAt(senhaHash, row, column); // Atualiza a célula com o hash criptografado
-                        model.addTableModelListener(this); // Re-adiciona o listener
+                        atualizarCelulaTabela(model, senhaHash, row, column, this);
                         break;
                     default:
                         Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "Coluna não editável");
@@ -259,7 +228,16 @@ public class PanelUsuarios extends javax.swing.JPanel {
                 usuarioRepository.save(usuario);
                 Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, "Usuário " + usuario.getNome() + " atualizado com sucesso.");
             }
-        });
+        };
+
+        model.addTableModelListener(listener);
+    }
+
+    // Função para atualizar célula e gerenciar o listener
+    private void atualizarCelulaTabela(DefaultTableModel model, Object valor, int row, int column, TableModelListener listener) {
+        model.removeTableModelListener(listener);
+        model.setValueAt(valor, row, column);
+        model.addTableModelListener(listener);
     }
 
     // Adicione um método para configurar o listener de seleção

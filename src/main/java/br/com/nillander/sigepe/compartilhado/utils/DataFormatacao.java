@@ -2,6 +2,7 @@ package br.com.nillander.sigepe.compartilhado.utils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class DataFormatacao {
 
@@ -18,6 +19,14 @@ public class DataFormatacao {
 
     public static String apenasData(LocalDateTime dateTime) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        if (dateTime == null) {
+            return ""; // Retorna vazio se a data for nula
+        }
+        return dateTime.format(dateTimeFormatter);
+    }
+
+    public static String apenasDataExtensa(LocalDateTime dateTime) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", new Locale("pt", "BR"));
         if (dateTime == null) {
             return ""; // Retorna vazio se a data for nula
         }

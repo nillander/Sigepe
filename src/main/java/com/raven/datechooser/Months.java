@@ -3,7 +3,6 @@ package com.raven.datechooser;
 public final class Months extends javax.swing.JPanel {
 
     private Event event;
-    private int m;
 
     public Months() {
         initComponents();
@@ -15,7 +14,6 @@ public final class Months extends javax.swing.JPanel {
         }
     }
 
-    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
