@@ -71,7 +71,7 @@ public class PanelUsuarios extends javax.swing.JPanel {
         for (Usuario usuario : usuarios) {
             model.addRow(new Object[] {
                     usuario.getId(),
-                    DataFormatacao.format(usuario.getAcessoLimite()),
+                    DataFormatacao.apenasData(usuario.getAcessoLimite()),
                     DataFormatacao.format(usuario.getAutenticadoEm()),
                     DataFormatacao.format(usuario.getCreatedAt()),
                     usuario.getCreatedBy(),
@@ -152,7 +152,23 @@ public class PanelUsuarios extends javax.swing.JPanel {
                         usuario.setTelefone((String) newValue);
                         break;
                     case "Usos":
-                        usuario.setUsos((Integer) newValue);
+                        // Permitir valores nulos para a coluna Usos
+                        if (newValue == null || ((String) newValue).trim().isEmpty()) {
+                            usuario.setUsos(null); // Define o campo como null
+                        } else {
+                            try {
+                            // Converter o valor para Integer
+                                usuario.setUsos(Integer.parseInt((String) newValue));
+                            } catch (NumberFormatException ex) {
+                                Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "Valor inválido para o campo Usos. Insira um número.");
+
+                                // Restaurar o valor original se a conversão falhar
+                                model.removeTableModelListener(this);
+                                model.setValueAt(usuario.getUsos(), row, column);
+                                model.addTableModelListener(this);
+                                return;
+                            }
+                        }
                         break;
                     case "Senha":
                         // Criptografa a senha com MD5 e atualiza o objeto Usuario
