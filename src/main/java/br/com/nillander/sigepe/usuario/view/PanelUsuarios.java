@@ -125,33 +125,43 @@ public class PanelUsuarios extends javax.swing.JPanel {
                 // Atualiza o campo correspondente no objeto Usuario baseado no nome da coluna
                 switch (columnName) {
                     case "Acesso Limite":
+                        // Obtemos o valor atual da célula como Date
+                        Date initialDate = usuario.getAcessoLimite() != null
+                                ? Date.from(usuario.getAcessoLimite().atZone(ZoneId.systemDefault()).toInstant())
+                                : null;
+
                         // Abre o JDialog com o DateChooser para escolher a data
-                        DataChooserDialog dateDialog = new DataChooserDialog(null);
+                        DataChooserDialog dateDialog = new DataChooserDialog(null, initialDate);
                         dateDialog.setVisible(true);
 
-                        // Obtemos a data selecionada, caso o usuário tenha confirmado
+                        // Obtemos a data selecionada ou null, caso o usuário tenha escolhido "Limpar" ou cancelado
                         Date selectedDate = dateDialog.getSelectedDate();
+
+                        // Verificação para cancelar a operação se o valor retornado for igual ao inicial
+                        if ((initialDate == null && selectedDate == null) || (initialDate != null && initialDate.equals(selectedDate))) {
+                            // Se o valor não mudou, cancela a operação
+                            return;
+                        }
+
+                        // Remover temporariamente o listener antes de atualizar a célula
+                        model.removeTableModelListener(this);
+
                         if (selectedDate != null) {
-                            // Converter Date para LocalDateTime
+                            // Converter Date para LocalDateTime se uma data foi selecionada ou confirmada
                             LocalDateTime acessoLimite = LocalDateTime.ofInstant(selectedDate.toInstant(), ZoneId.systemDefault());
                             usuario.setAcessoLimite(acessoLimite);
 
-                            // Remover temporariamente o listener antes de atualizar a célula
-                            model.removeTableModelListener(this);
-
-                            // Formata a data para exibição na tabela
-                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                            model.setValueAt(sdf.format(selectedDate), row, column);
-
-                            // Re-adicionar o listener
-                            model.addTableModelListener(this);
+                            // Usar o helper DataFormatacao para exibir a data formatada na tabela
+                            model.setValueAt(DataFormatacao.apenasData(acessoLimite), row, column);
 
                         } else {
-                            // Caso o usuário cancele, restaura o valor original
-                            model.removeTableModelListener(this);
-                            model.setValueAt(usuario.getAcessoLimite(), row, column);
-                            model.addTableModelListener(this);
+                            // Define o campo como null no banco de dados e exibe como vazio na tabela
+                            usuario.setAcessoLimite(null);
+                            model.setValueAt("", row, column);
                         }
+
+                        // Re-adicionar o listener
+                        model.addTableModelListener(this);
                         break;
                     case "Email":
                         String novoEmail = (String) newValue;
