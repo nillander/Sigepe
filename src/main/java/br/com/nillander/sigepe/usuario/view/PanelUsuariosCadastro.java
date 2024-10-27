@@ -14,6 +14,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
 
 public class PanelUsuariosCadastro extends JPanel {
 
@@ -34,6 +35,9 @@ public class PanelUsuariosCadastro extends JPanel {
     private void initUI() {
         setLayout(new BorderLayout());
 
+        // Define o tamanho da fonte para todos os componentes
+        Font fontePadrao = new Font("Segoe UI", Font.PLAIN, 14);
+
         // Painel de formulário
         JPanel panelForm = new JPanel();
         panelForm.setLayout(new GridBagLayout());
@@ -44,62 +48,84 @@ public class PanelUsuariosCadastro extends JPanel {
         // Campo Nome
         gbc.gridx = 0;
         gbc.gridy = 0;
-        panelForm.add(new JLabel("Nome:"), gbc);
+        JLabel labelNome = new JLabel("Nome:");
+        labelNome.setFont(fontePadrao);
+        panelForm.add(labelNome, gbc);
         txtNome = new JTextField();
+        txtNome.setFont(fontePadrao);
         gbc.gridx = 1;
         panelForm.add(txtNome, gbc);
 
         // Campo Email
         gbc.gridx = 0;
         gbc.gridy = 1;
-        panelForm.add(new JLabel("Email:"), gbc);
+        JLabel labelEmail = new JLabel("Email:");
+        labelEmail.setFont(fontePadrao);
+        panelForm.add(labelEmail, gbc);
         txtEmail = new JTextField();
+        txtEmail.setFont(fontePadrao);
         gbc.gridx = 1;
         panelForm.add(txtEmail, gbc);
 
         // Campo Telefone
         gbc.gridx = 0;
         gbc.gridy = 2;
-        panelForm.add(new JLabel("Telefone:"), gbc);
+        JLabel labelTelefone = new JLabel("Telefone:");
+        labelTelefone.setFont(fontePadrao);
+        panelForm.add(labelTelefone, gbc);
         txtTelefone = new JTextField(15);
+        txtTelefone.setFont(fontePadrao);
         gbc.gridx = 1;
         panelForm.add(txtTelefone, gbc);
 
         // Campo Senha
         gbc.gridx = 0;
         gbc.gridy = 3;
-        panelForm.add(new JLabel("Senha:"), gbc);
+        JLabel labelSenha = new JLabel("Senha:");
+        labelSenha.setFont(fontePadrao);
+        panelForm.add(labelSenha, gbc);
         txtSenha = new JPasswordField();
         txtSenha.putClientProperty(FlatClientProperties.STYLE, "showRevealButton:true");
+        txtSenha.setFont(fontePadrao);
         gbc.gridx = 1;
         panelForm.add(txtSenha, gbc);
 
         // Campo Nível
         gbc.gridx = 0;
         gbc.gridy = 4;
-        panelForm.add(new JLabel("Nível:"), gbc);
+        JLabel labelNivel = new JLabel("Nível:");
+        labelNivel.setFont(fontePadrao);
+        panelForm.add(labelNivel, gbc);
         cmbNivel = new JComboBox<>(new String[] { "1", "2", "3" });
+        cmbNivel.setFont(fontePadrao);
         gbc.gridx = 1;
         panelForm.add(cmbNivel, gbc);
 
         // Campo Status
         gbc.gridx = 0;
         gbc.gridy = 5;
-        panelForm.add(new JLabel("Status:"), gbc);
+        JLabel labelStatus = new JLabel("Status:");
+        labelStatus.setFont(fontePadrao);
+        panelForm.add(labelStatus, gbc);
         cmbStatus = new JComboBox<>(new String[] { "A", "D", "P" });
+        cmbStatus.setFont(fontePadrao);
         gbc.gridx = 1;
         panelForm.add(cmbStatus, gbc);
 
         // Campo Usos
         gbc.gridx = 0;
         gbc.gridy = 6;
-        panelForm.add(new JLabel("Usos:"), gbc);
+        JLabel labelUsos = new JLabel("Usos:");
+        labelUsos.setFont(fontePadrao);
+        panelForm.add(labelUsos, gbc);
         spnUsos = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
+        spnUsos.setFont(fontePadrao);
         gbc.gridx = 1;
         panelForm.add(spnUsos, gbc);
 
         // Configura o botão Salvar e sua ação
         btnSalvar = new JButton("Salvar");
+        btnSalvar.setFont(fontePadrao);
         btnSalvar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -109,6 +135,7 @@ public class PanelUsuariosCadastro extends JPanel {
 
         // Botão Voltar
         btnVoltar = new JButton("Voltar");
+        btnVoltar.setFont(fontePadrao);
         btnVoltar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -172,6 +199,9 @@ public class PanelUsuariosCadastro extends JPanel {
         novoUsuario.setNivel(Integer.parseInt((String) cmbNivel.getSelectedItem()));
         novoUsuario.setStatus((String) cmbStatus.getSelectedItem());
         novoUsuario.setUsos(usos == 0 ? null : usos);
+
+        // Define Acesso Limite para a data atual mais 1 mês
+        novoUsuario.setAcessoLimite(LocalDateTime.now().plusMonths(1));
 
         usuarioRepository.save(novoUsuario);
         Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, "Usuário salvo com sucesso.");
