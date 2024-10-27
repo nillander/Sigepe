@@ -17,7 +17,6 @@ import com.raven.datechooser.DataChooserDialog;
 import java.util.Date;
 
 import java.awt.event.KeyEvent;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -185,7 +184,33 @@ public class PanelUsuarios extends javax.swing.JPanel {
                         usuario.setEmail(novoEmail);
                         break;
                     case "Nível":
-                        usuario.setNivel((Integer) newValue);
+                        if (newValue == null || ((String) newValue).trim().isEmpty()) {
+                            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "O campo Nível não pode ser nulo.");
+                            model.removeTableModelListener(this);
+                            model.setValueAt(usuario.getNivel(), row, column);
+                            model.addTableModelListener(this);
+                            return;
+                        }
+                        try {
+                            int nivel = Integer.parseInt((String) newValue);
+                            if (nivel < 0) {
+                                Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "O valor para Nível deve ser maior ou igual a zero.");
+                                model.removeTableModelListener(this);
+                                model.setValueAt(usuario.getNivel(), row, column);
+                                model.addTableModelListener(this);
+                                return;
+                            }
+                            usuario.setNivel(nivel);
+                            model.removeTableModelListener(this);
+                            model.setValueAt(usuario.getNivel(), row, column);
+                            model.addTableModelListener(this);
+                        } catch (NumberFormatException ex) {
+                            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "Valor inválido para o campo Nível. Insira um número.");
+                            model.removeTableModelListener(this);
+                            model.setValueAt(usuario.getNivel(), row, column);
+                            model.addTableModelListener(this);
+                            return;
+                        }
                         break;
                     case "Nome":
                         usuario.setNome((String) newValue);
@@ -518,6 +543,7 @@ public class PanelUsuarios extends javax.swing.JPanel {
     }
 
     private void jbuttonNovoActionPerformed(java.awt.event.ActionEvent evt) {
+        // Método jbuttonNovoActionPerformed
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
