@@ -17,6 +17,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     // Busca o usuário pelo username e password
     Optional<Usuario> findByEmailAndSenha(String email, String senha);
 
+    // Método para buscar um usuário por email
+    Optional<Usuario> findByEmail(String email);
+
     @Modifying
     @Transactional
     @Query("UPDATE Usuario u SET u.deletedAt = CURRENT_TIMESTAMP, u.deletedBy = :deletedBy WHERE u.id = :id")

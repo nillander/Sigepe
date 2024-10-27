@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 
 import java.awt.event.KeyEvent;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -118,7 +119,25 @@ public class PanelUsuarios extends javax.swing.JPanel {
                 // Atualiza o campo correspondente no objeto Usuario baseado no nome da coluna
                 switch (columnName) {
                     case "Email":
-                        usuario.setEmail((String) newValue);
+                        String novoEmail = (String) newValue;
+
+                        // Verificar se o email já está em uso por outro usuário
+                        Optional<Usuario> usuarioExistenteOpt = usuarioRepository.findByEmail(novoEmail);
+                        if (usuarioExistenteOpt.isPresent() && !usuarioExistenteOpt.get().getId().equals(usuarioId)) {
+                            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "Já existe um usuário com este email.");
+
+                            // Remover temporariamente o listener antes de restaurar o valor
+                            model.removeTableModelListener(this);
+
+                            // Restaurar o valor original na tabela
+                            model.setValueAt(usuario.getEmail(), row, column);
+
+                            // Re-adicionar o listener
+                            model.addTableModelListener(this);
+                            return; // Interrompe a atualização
+                        }
+
+                        usuario.setEmail(novoEmail);
                         break;
                     case "Nível":
                         usuario.setNivel((Integer) newValue);
@@ -152,7 +171,7 @@ public class PanelUsuarios extends javax.swing.JPanel {
 
                 // Salva a atualização no banco de dados
                 usuarioRepository.save(usuario);
-                Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, "Usuário " + usuario.getNome() + " atualizado com sucesso no banco de dados.");
+                Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, "Usuário " + usuario.getNome() + " atualizado com sucesso.");
             }
         });
     }
@@ -166,7 +185,6 @@ public class PanelUsuarios extends javax.swing.JPanel {
     }
 
     private void proximaPagina() {
-        Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, "currentPage: " + currentPage);
         if (currentPage < totalPages - 1) {
             currentPage++;
             carregarUsuarios();
@@ -174,7 +192,6 @@ public class PanelUsuarios extends javax.swing.JPanel {
     }
 
     private void paginaAnterior() {
-        Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, "currentPage: " + currentPage);
         if (currentPage > 0) {
             currentPage--;
             carregarUsuarios();
