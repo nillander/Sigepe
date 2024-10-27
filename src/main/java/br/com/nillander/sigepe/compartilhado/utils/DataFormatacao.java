@@ -15,4 +15,12 @@ public class DataFormatacao {
         }
         return dateTime.format(dateTimeFormatter);
     }
+
+    public static String apenasData(LocalDateTime dateTime) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        if (dateTime == null) {
+            return ""; // Retorna vazio se a data for nula
+        }
+        return dateTime.format(dateTimeFormatter);
+    }
 }

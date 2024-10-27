@@ -13,7 +13,13 @@ import javax.swing.table.DefaultTableModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import com.raven.datechooser.DataChooserDialog;
+import java.util.Date;
+
 import java.awt.event.KeyEvent;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +70,7 @@ public class PanelUsuarios extends javax.swing.JPanel {
                 // Permitir edição apenas nas colunas especificadas
                 return "Email".equals(columnName) || "Nome".equals(columnName) || "Nível".equals(columnName) ||
                         "Status".equals(columnName) || "Telefone".equals(columnName) || "Usos".equals(columnName) ||
-                        "Senha".equals(columnName); // Inclui a coluna Senha para permitir edição
+                        "Senha".equals(columnName) || "Acesso Limite".equals(columnName);
             }
         };
 
@@ -118,6 +124,35 @@ public class PanelUsuarios extends javax.swing.JPanel {
 
                 // Atualiza o campo correspondente no objeto Usuario baseado no nome da coluna
                 switch (columnName) {
+                    case "Acesso Limite":
+                        // Abre o JDialog com o DateChooser para escolher a data
+                        DataChooserDialog dateDialog = new DataChooserDialog(null);
+                        dateDialog.setVisible(true);
+
+                        // Obtemos a data selecionada, caso o usuário tenha confirmado
+                        Date selectedDate = dateDialog.getSelectedDate();
+                        if (selectedDate != null) {
+                            // Converter Date para LocalDateTime
+                            LocalDateTime acessoLimite = LocalDateTime.ofInstant(selectedDate.toInstant(), ZoneId.systemDefault());
+                            usuario.setAcessoLimite(acessoLimite);
+
+                            // Remover temporariamente o listener antes de atualizar a célula
+                            model.removeTableModelListener(this);
+
+                            // Formata a data para exibição na tabela
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                            model.setValueAt(sdf.format(selectedDate), row, column);
+
+                            // Re-adicionar o listener
+                            model.addTableModelListener(this);
+
+                        } else {
+                            // Caso o usuário cancele, restaura o valor original
+                            model.removeTableModelListener(this);
+                            model.setValueAt(usuario.getAcessoLimite(), row, column);
+                            model.addTableModelListener(this);
+                        }
+                        break;
                     case "Email":
                         String novoEmail = (String) newValue;
 
@@ -157,7 +192,7 @@ public class PanelUsuarios extends javax.swing.JPanel {
                             usuario.setUsos(null); // Define o campo como null
                         } else {
                             try {
-                            // Converter o valor para Integer
+                                // Converter o valor para Integer
                                 usuario.setUsos(Integer.parseInt((String) newValue));
                             } catch (NumberFormatException ex) {
                                 Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "Valor inválido para o campo Usos. Insira um número.");
