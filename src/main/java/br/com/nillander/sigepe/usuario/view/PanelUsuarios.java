@@ -4,6 +4,7 @@ import br.com.nillander.sigepe.App;
 import br.com.nillander.sigepe.autenticacao.model.Usuario;
 import br.com.nillander.sigepe.autenticacao.model.UsuarioRepository;
 import br.com.nillander.sigepe.compartilhado.utils.DataFormatacao;
+import br.com.nillander.sigepe.compartilhado.utils.Md5;
 import br.com.nillander.sigepe.compartilhado.view.Principal;
 import raven.toast.Notifications;
 
@@ -11,8 +12,6 @@ import javax.swing.table.DefaultTableModel;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-
-import com.formdev.flatlaf.FlatClientProperties;
 
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -58,8 +57,13 @@ public class PanelUsuarios extends javax.swing.JPanel {
         }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // Permitir edição apenas nas colunas de Email, Nome, Nível, Status, Telefone, Usos
-                return column == 7 || column == 9 || column == 10 || column == 12 || column == 13 || column == 16;
+                // Obter o nome da coluna para verificação
+                String columnName = getColumnName(column);
+
+                // Permitir edição apenas nas colunas especificadas
+                return "Email".equals(columnName) || "Nome".equals(columnName) || "Nível".equals(columnName) ||
+                        "Status".equals(columnName) || "Telefone".equals(columnName) || "Usos".equals(columnName) ||
+                        "Senha".equals(columnName); // Inclui a coluna Senha para permitir edição
             }
         };
 
@@ -130,6 +134,16 @@ public class PanelUsuarios extends javax.swing.JPanel {
                         break;
                     case "Usos":
                         usuario.setUsos((Integer) newValue);
+                        break;
+                    case "Senha":
+                        // Criptografa a senha com MD5 e atualiza o objeto Usuario
+                        String senhaHash = Md5.hash((String) newValue);
+                        usuario.setSenha(senhaHash);
+
+                        // Remove temporariamente o listener antes de atualizar a célula
+                        model.removeTableModelListener(this);
+                        model.setValueAt(senhaHash, row, column); // Atualiza a célula com o hash criptografado
+                        model.addTableModelListener(this); // Re-adiciona o listener
                         break;
                     default:
                         Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "Coluna não editável");
