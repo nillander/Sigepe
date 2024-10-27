@@ -17,6 +17,9 @@ import com.formdev.flatlaf.FlatClientProperties;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+
 public class PanelUsuarios extends javax.swing.JPanel {
 
     UsuarioRepository usuarioRepository = App.getInstance().getContext().getBean(UsuarioRepository.class);
@@ -52,7 +55,13 @@ public class PanelUsuarios extends javax.swing.JPanel {
                 "Deletado Em", "Deletado Por", "Email", "KSUID", "Nível",
                 "Nome", "Senha", "Status", "Telefone", "Atualizado Em",
                 "Atualizado Por", "Usos"
-        }, 0);
+        }, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Permitir edição apenas nas colunas de Email, Nome, Nível, Status, Telefone, Usos
+                return column == 7 || column == 9 || column == 10 || column == 12 || column == 13 || column == 16;
+            }
+        };
 
         for (Usuario usuario : usuarios) {
             model.addRow(new Object[] {
@@ -80,6 +89,55 @@ public class PanelUsuarios extends javax.swing.JPanel {
 
         // Atualiza o labelResultados com a quantidade de usuários
         labelValueResultados.setText(String.valueOf(usuarios.size()));
+
+        // Adiciona um listener para monitorar edições na tabela
+        model.addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                int row = e.getFirstRow();
+                int column = e.getColumn();
+
+                // Captura o novo valor e o ID do usuário modificado
+                Object newValue = model.getValueAt(row, column);
+                Long usuarioId = (Long) model.getValueAt(row, 0); // Coluna "ID"
+
+                // Busca o usuário pelo ID
+                Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
+                if (usuario == null) {
+                    Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, "Usuário não encontrado para atualização");
+                    return;
+                }
+
+                // Atualiza o campo correspondente no objeto Usuario
+                switch (column) {
+                    case 7: // Email
+                        usuario.setEmail((String) newValue);
+                        break;
+                    case 9: // Nível
+                        usuario.setNivel((Integer) newValue);
+                        break;
+                    case 10: // Nome
+                        usuario.setNome((String) newValue);
+                        break;
+                    case 12: // Status
+                        usuario.setStatus((String) newValue);
+                        break;
+                    case 13: // Telefone
+                        usuario.setTelefone((String) newValue);
+                        break;
+                    case 16: // Usos
+                        usuario.setUsos((Integer) newValue);
+                        break;
+                    default:
+                        Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "Coluna não editável");
+                        return;
+                }
+
+                // Salva a atualização no banco de dados
+                usuarioRepository.save(usuario);
+                Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, "Usuário " + usuario.getNome() + " atualizado com sucesso no banco de dados.");
+            }
+        });
     }
 
     // Adicione um método para configurar o listener de seleção
@@ -91,7 +149,7 @@ public class PanelUsuarios extends javax.swing.JPanel {
     }
 
     private void proximaPagina() {
-        System.out.println("currentPage: " + currentPage);
+        Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, "currentPage: " + currentPage);
         if (currentPage < totalPages - 1) {
             currentPage++;
             carregarUsuarios();
@@ -99,7 +157,7 @@ public class PanelUsuarios extends javax.swing.JPanel {
     }
 
     private void paginaAnterior() {
-        System.out.println("currentPage: " + currentPage);
+        Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, "currentPage: " + currentPage);
         if (currentPage > 0) {
             currentPage--;
             carregarUsuarios();
