@@ -108,24 +108,27 @@ public class PanelUsuarios extends javax.swing.JPanel {
                     return;
                 }
 
-                // Atualiza o campo correspondente no objeto Usuario
-                switch (column) {
-                    case 7: // Email
+                // Obter o nome da coluna para o switch
+                String columnName = model.getColumnName(column);
+
+                // Atualiza o campo correspondente no objeto Usuario baseado no nome da coluna
+                switch (columnName) {
+                    case "Email":
                         usuario.setEmail((String) newValue);
                         break;
-                    case 9: // Nível
+                    case "Nível":
                         usuario.setNivel((Integer) newValue);
                         break;
-                    case 10: // Nome
+                    case "Nome":
                         usuario.setNome((String) newValue);
                         break;
-                    case 12: // Status
+                    case "Status":
                         usuario.setStatus((String) newValue);
                         break;
-                    case 13: // Telefone
+                    case "Telefone":
                         usuario.setTelefone((String) newValue);
                         break;
-                    case 16: // Usos
+                    case "Usos":
                         usuario.setUsos((Integer) newValue);
                         break;
                     default:
