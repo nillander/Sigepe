@@ -7,12 +7,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
-
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import com.github.ksuid.Ksuid;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -21,6 +21,10 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "ksuid", length = 27, unique = true, nullable = false, updatable = false)
+    private String ksuid;
+
     @Column(name = "nome", length = 255, nullable = false)
     private String nome;
 
@@ -70,21 +74,29 @@ public class Usuario {
     @Column(name = "deleted_by")
     private String deletedBy;
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    // Construtor
+    public Usuario() {
+        this.ksuid = Ksuid.newKsuid().toString(); // Gera um novo KSUID
     }
 
-    // Getters e Setters
     public Long getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    public String getKsuid() {
+        return ksuid;
+    }
+
+    public void setKsuid(String ksuid) {
+        this.ksuid = ksuid;
+    }
+
     public String getNome() {
-        return this.nome;
+        return nome;
     }
 
     public void setNome(String nome) {
@@ -92,7 +104,7 @@ public class Usuario {
     }
 
     public String getEmail() {
-        return this.email;
+        return email;
     }
 
     public void setEmail(String email) {
@@ -100,7 +112,7 @@ public class Usuario {
     }
 
     public String getSenha() {
-        return this.senha;
+        return senha;
     }
 
     public void setSenha(String senha) {
@@ -108,7 +120,7 @@ public class Usuario {
     }
 
     public Integer getNivel() {
-        return this.nivel;
+        return nivel;
     }
 
     public void setNivel(Integer nivel) {
@@ -116,7 +128,7 @@ public class Usuario {
     }
 
     public String getTelefone() {
-        return this.telefone;
+        return telefone;
     }
 
     public void setTelefone(String telefone) {
@@ -124,7 +136,7 @@ public class Usuario {
     }
 
     public LocalDateTime getAcessoLimite() {
-        return this.acessoLimite;
+        return acessoLimite;
     }
 
     public void setAcessoLimite(LocalDateTime acessoLimite) {
@@ -132,7 +144,7 @@ public class Usuario {
     }
 
     public LocalDateTime getAutenticadoEm() {
-        return this.autenticadoEm;
+        return autenticadoEm;
     }
 
     public void setAutenticadoEm(LocalDateTime autenticadoEm) {
@@ -140,7 +152,7 @@ public class Usuario {
     }
 
     public Integer getUsos() {
-        return this.usos;
+        return usos;
     }
 
     public void setUsos(Integer usos) {
@@ -148,11 +160,15 @@ public class Usuario {
     }
 
     public String getStatus() {
-        return this.status;
+        return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
@@ -160,7 +176,7 @@ public class Usuario {
     }
 
     public LocalDateTime getUpdatedAt() {
-        return this.updatedAt;
+        return updatedAt;
     }
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
@@ -168,7 +184,7 @@ public class Usuario {
     }
 
     public String getCreatedBy() {
-        return this.createdBy;
+        return createdBy;
     }
 
     public void setCreatedBy(String createdBy) {
@@ -176,7 +192,7 @@ public class Usuario {
     }
 
     public String getUpdatedBy() {
-        return this.updatedBy;
+        return updatedBy;
     }
 
     public void setUpdatedBy(String updatedBy) {
@@ -184,7 +200,7 @@ public class Usuario {
     }
 
     public LocalDateTime getDeletedAt() {
-        return this.deletedAt;
+        return deletedAt;
     }
 
     public void setDeletedAt(LocalDateTime deletedAt) {
@@ -192,7 +208,7 @@ public class Usuario {
     }
 
     public String getDeletedBy() {
-        return this.deletedBy;
+        return deletedBy;
     }
 
     public void setDeletedBy(String deletedBy) {

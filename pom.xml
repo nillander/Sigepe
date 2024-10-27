@@ -8,7 +8,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <spring-boot.version>3.3.4</spring-boot.version>
+        <spring-boot.version>3.3.5</spring-boot.version>
         <!-- Define a versão do source -->
         <maven.compiler.source>17</maven.compiler.source>
         <!-- Define a versão do target -->
@@ -16,7 +16,8 @@
         <!-- Define a codificação UTF-8 -->
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     </properties>
-    <!-- FlatLaf -->
+
+    <!-- Repositórios necessários -->
     <repositories>
         <repository>
             <id>sonatype-oss-snapshots</id>
@@ -31,11 +32,12 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <version>${spring-boot.version}</version>
         </dependency>
+
         <!-- Driver JDBC do MySQL -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>LATEST</version>
+            <version>8.0.32</version>
         </dependency>
 
         <!-- Dependências do Spring Boot para testes -->
@@ -53,38 +55,47 @@
             <artifactId>modal-dialog</artifactId>
             <version>1.2.1-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>io.github.dj-raven</groupId>
             <artifactId>swing-datetime-picker</artifactId>
             <version>1.4.1-SNAPSHOT</version>
         </dependency>
+
+        <!-- FlatLaf e temas -->
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-intellij-themes</artifactId>
+            <version>3.2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-extras</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-fonts-roboto</artifactId>
             <version>2.137</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.formdev</groupId>
-            <artifactId>flatlaf</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.formdev</groupId>
-            <artifactId>flatlaf-extras</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.formdev</groupId>
-            <artifactId>flatlaf-fonts-roboto</artifactId>
-            <version>2.137</version>
-        </dependency>
+        <!-- Miglayout para layouts flexíveis -->
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout-swing</artifactId>
             <version>11.1</version>
         </dependency>
 
+        <!-- Biblioteca de sintaxe -->
+        <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>rsyntaxtextarea</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+
+        <!-- Notificações Toast -->
         <dependency>
             <groupId>raven.toast</groupId>
             <artifactId>swing-toast-notifications</artifactId>
@@ -98,6 +109,13 @@
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
             <version>3.1.0</version>
+        </dependency>
+
+        <!-- KSUID -->
+        <dependency>
+            <groupId>com.github.ksuid</groupId>
+            <artifactId>ksuid</artifactId>
+            <version>1.1.2</version>
         </dependency>
     </dependencies>
 

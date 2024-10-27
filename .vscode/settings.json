@@ -19,5 +19,6 @@
         //     "path": "C:\\Program Files\\Java\\jdk1.8.0_291",
         //     "default": false
         // }
-    ]
+    ],
+    "java.format.settings.url": "eclipse-formatter.xml"
 }
