@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -193,7 +194,20 @@ public class PanelUsuarios extends javax.swing.JPanel {
                         usuario.setNome((String) newValue);
                         break;
                     case "Status":
-                        usuario.setStatus((String) newValue);
+                        String novoStatus = ((String) newValue).toUpperCase();
+
+                        // Define os valores permitidos para o status
+                        Set<String> valoresPermitidos = Set.of("A", "D", "P");
+
+                        // Verifica se o novoStatus está dentro dos valores permitidos
+                        if (!valoresPermitidos.contains(novoStatus)) {
+                            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "Status inválido. Utilize apenas 'A', 'D' ou 'P'.");
+                            atualizarCelulaTabela(model, usuario.getStatus(), row, column, this); // Restaura o valor original
+                            return;
+                        }
+
+                        // Define o valor válido no campo Status
+                        usuario.setStatus(novoStatus);
                         break;
                     case "Telefone":
                         usuario.setTelefone((String) newValue);
@@ -310,6 +324,11 @@ public class PanelUsuarios extends javax.swing.JPanel {
 
         buttonNovo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         buttonNovo.setText("Novo");
+        buttonNovo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonNovoActionPerformed(evt);
+            }
+        });
 
         buttonEditar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         buttonEditar.setText("Editar");
@@ -520,9 +539,9 @@ public class PanelUsuarios extends javax.swing.JPanel {
         atualizarTabela(usuarios);
     }
 
-    private void jbuttonNovoActionPerformed(java.awt.event.ActionEvent evt) {
-        // Método jbuttonNovoActionPerformed
-    }
+    private void buttonNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonNovoActionPerformed
+        Principal.getInstance().exibirPainel(new PanelUsuariosCadastro());
+    }//GEN-LAST:event_buttonNovoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonAnterior;
