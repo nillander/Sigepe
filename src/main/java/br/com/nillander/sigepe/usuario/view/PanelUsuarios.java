@@ -7,13 +7,23 @@ import br.com.nillander.sigepe.compartilhado.utils.DataFormatacao;
 import br.com.nillander.sigepe.compartilhado.view.Principal;
 import raven.toast.Notifications;
 
-import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
+import com.formdev.flatlaf.FlatClientProperties;
+
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 public class PanelUsuarios extends javax.swing.JPanel {
 
     UsuarioRepository usuarioRepository = App.getInstance().getContext().getBean(UsuarioRepository.class);
+
+    private int currentPage = 0;
+    private final int PAGE_SIZE = 200; // Número de registros por página
+    private long totalPages = 0; // Número total de páginas
 
     public PanelUsuarios() {
         // Verifica o nível do usuário antes de inicializar o painel
@@ -25,14 +35,18 @@ public class PanelUsuarios extends javax.swing.JPanel {
         // Inicializa o painel normalmente se o nível for adequado
         initComponents();
         carregarUsuarios();
+        configurarListenerSelecaoTabela(); // Configura o listener de seleção
     }
 
-    // Método para carregar os usuários e exibir na tabela
     private void carregarUsuarios() {
-        // Obtém a lista de usuários do banco de dados
-        List<Usuario> usuarios = usuarioRepository.findAll();
+        Page<Usuario> page = usuarioRepository.findAll(PageRequest.of(currentPage, PAGE_SIZE));
+        List<Usuario> usuarios = page.getContent();
+        totalPages = page.getTotalPages();
+        atualizarTabela(usuarios);
+        atualizarIndicePagina();
+    }
 
-        // Define o modelo da tabela com todas as colunas necessárias
+    private void atualizarTabela(List<Usuario> usuarios) {
         DefaultTableModel model = new DefaultTableModel(new String[] {
                 "ID", "Acesso Limite", "Autenticado Em", "Criado Em", "Criado Por",
                 "Deletado Em", "Deletado Por", "Email", "KSUID", "Nível",
@@ -40,7 +54,6 @@ public class PanelUsuarios extends javax.swing.JPanel {
                 "Atualizado Por", "Usos"
         }, 0);
 
-        // Adiciona uma linha para cada usuário com os valores dos atributos
         for (Usuario usuario : usuarios) {
             model.addRow(new Object[] {
                     usuario.getId(),
@@ -63,31 +76,161 @@ public class PanelUsuarios extends javax.swing.JPanel {
             });
         }
 
-        // Aplica o modelo preenchido à tabela
-        tableConteudo.setModel(model);
+        tabelaConteudo.setModel(model);
+
+        // Atualiza o labelResultados com a quantidade de usuários
+        labelValueResultados.setText(String.valueOf(usuarios.size()));
+    }
+
+    // Adicione um método para configurar o listener de seleção
+    private void configurarListenerSelecaoTabela() {
+        tabelaConteudo.getSelectionModel().addListSelectionListener(event -> {
+            int linhasSelecionadas = tabelaConteudo.getSelectedRowCount();
+            labelValueSelecionados.setText(String.valueOf(linhasSelecionadas));
+        });
+    }
+
+    private void proximaPagina() {
+        System.out.println("currentPage: " + currentPage);
+        if (currentPage < totalPages - 1) {
+            currentPage++;
+            carregarUsuarios();
+        }
+    }
+
+    private void paginaAnterior() {
+        System.out.println("currentPage: " + currentPage);
+        if (currentPage > 0) {
+            currentPage--;
+            carregarUsuarios();
+        }
+    }
+
+    private void atualizarIndicePagina() {
+        labelIndicePagina.setText("Página " + (currentPage + 1) + " de " + totalPages);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jlTitle = new javax.swing.JLabel();
-        jbuttonNovo = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tableConteudo = new javax.swing.JTable();
+        panelContainer = new javax.swing.JPanel();
+        labelTextTitulo = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        splitContainer = new javax.swing.JSplitPane();
+        panelMenu = new javax.swing.JPanel();
         buttonAtualizar = new javax.swing.JButton();
+        buttonNovo = new javax.swing.JButton();
+        buttonEditar = new javax.swing.JButton();
+        buttonExcluir = new javax.swing.JButton();
+        buttonImprimir = new javax.swing.JButton();
+        buttonDetalhes = new javax.swing.JButton();
+        panelContent = new javax.swing.JPanel();
+        labelTextPesquisar = new javax.swing.JLabel();
+        textFieldPesquisa = new javax.swing.JTextField();
+        buttonPesquisar = new javax.swing.JButton();
+        labelIndicePagina = new javax.swing.JLabel();
+        buttonAnterior = new javax.swing.JButton();
+        buttonProximo = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabelaConteudo = new javax.swing.JTable();
+        labelTextResultados = new javax.swing.JLabel();
+        labelValueResultados = new javax.swing.JLabel();
+        labelTextSelecionados = new javax.swing.JLabel();
+        labelValueSelecionados = new javax.swing.JLabel();
 
-        jlTitle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jlTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jlTitle.setText("Usuários");
+        labelTextTitulo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        labelTextTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelTextTitulo.setText("Usuários");
 
-        jbuttonNovo.setText("Novo");
-        jbuttonNovo.addActionListener(new java.awt.event.ActionListener() {
+        splitContainer.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        buttonAtualizar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        buttonAtualizar.setText("Atualizar");
+        buttonAtualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbuttonNovoActionPerformed(evt);
+                buttonAtualizarActionPerformed(evt);
             }
         });
 
-        tableConteudo.setModel(new javax.swing.table.DefaultTableModel(
+        buttonNovo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        buttonNovo.setText("Novo");
+
+        buttonEditar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        buttonEditar.setText("Editar");
+
+        buttonExcluir.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        buttonExcluir.setText("Excluir");
+
+        buttonImprimir.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        buttonImprimir.setText("Imprimir");
+
+        buttonDetalhes.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        buttonDetalhes.setText("Detalhes");
+
+        javax.swing.GroupLayout panelMenuLayout = new javax.swing.GroupLayout(panelMenu);
+        panelMenu.setLayout(panelMenuLayout);
+        panelMenuLayout.setHorizontalGroup(
+                panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(panelMenuLayout.createSequentialGroup()
+                                .addGap(0, 0, 0)
+                                .addGroup(panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(buttonAtualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(buttonNovo, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                                        .addComponent(buttonEditar, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                                        .addComponent(buttonExcluir, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                                        .addComponent(buttonImprimir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(buttonDetalhes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(0, 0, 0)));
+        panelMenuLayout.setVerticalGroup(
+                panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(panelMenuLayout.createSequentialGroup()
+                                .addComponent(buttonAtualizar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonNovo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonEditar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonExcluir)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonImprimir)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonDetalhes)
+                                .addContainerGap(279, Short.MAX_VALUE)));
+
+        splitContainer.setLeftComponent(panelMenu);
+
+        labelTextPesquisar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelTextPesquisar.setText("Pesquisar:");
+
+        textFieldPesquisa.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        textFieldPesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textFieldPesquisaKeyReleased(evt);
+            }
+        });
+
+        buttonPesquisar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        buttonPesquisar.setText("X");
+
+        labelIndicePagina.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelIndicePagina.setText("Página x de x");
+
+        buttonAnterior.setText("<");
+        buttonAnterior.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonAnteriorActionPerformed(evt);
+            }
+        });
+
+        buttonProximo.setText(">");
+        buttonProximo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonProximoActionPerformed(evt);
+            }
+        });
+
+        tabelaConteudo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        tabelaConteudo.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][] {
                         { null, null, null, null },
                         { null, null, null, null },
@@ -97,60 +240,158 @@ public class PanelUsuarios extends javax.swing.JPanel {
                 new String[] {
                         "Title 1", "Title 2", "Title 3", "Title 4"
                 }));
-        jScrollPane1.setViewportView(tableConteudo);
+        jScrollPane1.setViewportView(tabelaConteudo);
 
-        buttonAtualizar.setText("Atualizar");
-        buttonAtualizar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonAtualizarActionPerformed(evt);
-            }
-        });
+        labelTextResultados.setText("Resultados:");
+
+        labelValueResultados.setText("00.000");
+
+        labelTextSelecionados.setText("Selecionados:");
+
+        labelValueSelecionados.setText("00.000");
+
+        javax.swing.GroupLayout panelContentLayout = new javax.swing.GroupLayout(panelContent);
+        panelContent.setLayout(panelContentLayout);
+        panelContentLayout.setHorizontalGroup(
+                panelContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(panelContentLayout.createSequentialGroup()
+                                .addGroup(panelContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(panelContentLayout.createSequentialGroup()
+                                                .addContainerGap()
+                                                .addComponent(labelTextPesquisar)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(textFieldPesquisa)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(buttonPesquisar))
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelContentLayout.createSequentialGroup()
+                                                .addComponent(labelTextResultados)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(labelValueResultados)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(labelTextSelecionados)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(labelValueSelecionados)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(labelIndicePagina)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(buttonAnterior, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(buttonProximo, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap()));
+        panelContentLayout.setVerticalGroup(
+                panelContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(panelContentLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(panelContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(textFieldPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(labelTextPesquisar)
+                                        .addComponent(buttonPesquisar))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(panelContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(labelIndicePagina)
+                                        .addComponent(labelTextResultados)
+                                        .addComponent(labelValueResultados)
+                                        .addComponent(labelTextSelecionados)
+                                        .addComponent(labelValueSelecionados)
+                                        .addComponent(buttonAnterior)
+                                        .addComponent(buttonProximo))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)));
+
+        splitContainer.setRightComponent(panelContent);
+
+        javax.swing.GroupLayout panelContainerLayout = new javax.swing.GroupLayout(panelContainer);
+        panelContainer.setLayout(panelContainerLayout);
+        panelContainerLayout.setHorizontalGroup(
+                panelContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(splitContainer)
+                        .addComponent(labelTextTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jSeparator1));
+        panelContainerLayout.setVerticalGroup(
+                panelContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(panelContainerLayout.createSequentialGroup()
+                                .addComponent(labelTextTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(splitContainer)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jlTitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                        .addGroup(layout.createSequentialGroup()
-                                                                .addComponent(jbuttonNovo)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                                .addComponent(buttonAtualizar))
-                                                        .addComponent(jScrollPane1))
-                                                .addGap(15, 15, 15)))
-                                .addContainerGap()));
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(25, 25, 25)
+                                .addComponent(panelContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(25, 25, 25)));
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jlTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jbuttonNovo)
-                                        .addComponent(buttonAtualizar))
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 494, Short.MAX_VALUE)
-                                .addContainerGap()));
+                                .addGap(25, 25, 25)
+                                .addComponent(panelContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(25, 25, 25)));
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAtualizarActionPerformed
+        currentPage = 0;
         carregarUsuarios();
     }//GEN-LAST:event_buttonAtualizarActionPerformed
 
+    private void buttonAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAnteriorActionPerformed
+        paginaAnterior();
+    }//GEN-LAST:event_buttonAnteriorActionPerformed
+
+    private void buttonProximoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonProximoActionPerformed
+        proximaPagina();
+    }//GEN-LAST:event_buttonProximoActionPerformed
+
+    private void textFieldPesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textFieldPesquisaKeyReleased
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            String termoPesquisa = textFieldPesquisa.getText().trim();
+            if (termoPesquisa.isEmpty()) {
+                carregarUsuarios(); // Recarrega a tabela com todos os dados se a pesquisa estiver vazia
+            } else {
+                pesquisarUsuarios(termoPesquisa);
+            }
+        } else if (textFieldPesquisa.getText().trim().isEmpty()) {
+            carregarUsuarios(); // Recarrega a tabela com todos os dados se a pesquisa estiver vazia
+        }
+    }//GEN-LAST:event_textFieldPesquisaKeyReleased
+
+    private void pesquisarUsuarios(String termo) {
+        List<Usuario> usuarios = usuarioRepository.findByNomeContainingIgnoreCaseOrEmailContainingIgnoreCase(termo, termo);
+        atualizarTabela(usuarios);
+    }
+
     private void jbuttonNovoActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonAnterior;
     private javax.swing.JButton buttonAtualizar;
+    private javax.swing.JButton buttonDetalhes;
+    private javax.swing.JButton buttonEditar;
+    private javax.swing.JButton buttonExcluir;
+    private javax.swing.JButton buttonImprimir;
+    private javax.swing.JButton buttonNovo;
+    private javax.swing.JButton buttonPesquisar;
+    private javax.swing.JButton buttonProximo;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JButton jbuttonNovo;
-    private javax.swing.JLabel jlTitle;
-    private javax.swing.JTable tableConteudo;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel labelIndicePagina;
+    private javax.swing.JLabel labelTextPesquisar;
+    private javax.swing.JLabel labelTextResultados;
+    private javax.swing.JLabel labelTextSelecionados;
+    private javax.swing.JLabel labelTextTitulo;
+    private javax.swing.JLabel labelValueResultados;
+    private javax.swing.JLabel labelValueSelecionados;
+    private javax.swing.JPanel panelContainer;
+    private javax.swing.JPanel panelContent;
+    private javax.swing.JPanel panelMenu;
+    private javax.swing.JSplitPane splitContainer;
+    private javax.swing.JTable tabelaConteudo;
+    private javax.swing.JTextField textFieldPesquisa;
     // End of variables declaration//GEN-END:variables
 
 }
