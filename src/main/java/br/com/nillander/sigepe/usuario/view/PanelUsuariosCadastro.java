@@ -3,6 +3,7 @@ package br.com.nillander.sigepe.usuario.view;
 import br.com.nillander.sigepe.App;
 import br.com.nillander.sigepe.autenticacao.model.Usuario;
 import br.com.nillander.sigepe.autenticacao.model.UsuarioRepository;
+import br.com.nillander.sigepe.compartilhado.utils.Md5;
 import br.com.nillander.sigepe.compartilhado.view.Principal;
 import raven.toast.Notifications;
 
@@ -24,7 +25,7 @@ public class PanelUsuariosCadastro extends JPanel {
     private JButton btnVoltar;
     private JComboBox<String> cmbStatus;
     private JSpinner spnUsos;
-    private JPasswordField txtPassword;
+    private JPasswordField txtSenha;
 
     public PanelUsuariosCadastro() {
         initUI();
@@ -44,7 +45,7 @@ public class PanelUsuariosCadastro extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         panelForm.add(new JLabel("Nome:"), gbc);
-        txtNome = new JTextField(20);
+        txtNome = new JTextField();
         gbc.gridx = 1;
         panelForm.add(txtNome, gbc);
 
@@ -52,7 +53,7 @@ public class PanelUsuariosCadastro extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 1;
         panelForm.add(new JLabel("Email:"), gbc);
-        txtEmail = new JTextField(20);
+        txtEmail = new JTextField();
         gbc.gridx = 1;
         panelForm.add(txtEmail, gbc);
 
@@ -68,7 +69,8 @@ public class PanelUsuariosCadastro extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 3;
         panelForm.add(new JLabel("Senha:"), gbc);
-        txtSenha = new JTextField(15);
+        txtSenha = new JPasswordField();
+        txtSenha.putClientProperty(FlatClientProperties.STYLE, "showRevealButton:true");
         gbc.gridx = 1;
         panelForm.add(txtSenha, gbc);
 
@@ -125,14 +127,51 @@ public class PanelUsuariosCadastro extends JPanel {
     private void salvarUsuario() {
         UsuarioRepository usuarioRepository = App.getInstance().getContext().getBean(UsuarioRepository.class);
 
+        // Validação de campos
+        String nome = txtNome.getText().trim();
+        String email = txtEmail.getText().trim();
+        String telefone = txtTelefone.getText().trim();
+        String senha = new String(txtSenha.getPassword()).trim();
+        Integer usos = null;
+        try {
+            usos = (Integer) spnUsos.getValue();
+        } catch (Exception e) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "O campo Usos deve ser um número inteiro.");
+            return;
+        }
+
+        if (nome.length() < 3) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "O nome deve conter pelo menos 3 caracteres.");
+            return;
+        }
+        if (email.length() < 3) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "O email deve conter pelo menos 3 caracteres.");
+            return;
+        }
+        if (telefone.length() < 3) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "O telefone deve conter pelo menos 3 caracteres.");
+            return;
+        }
+        if (senha.length() < 3) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "A senha deve conter pelo menos 3 caracteres.");
+            return;
+        }
+
+        // Verifica se já existe um usuário com o mesmo email
+        if (usuarioRepository.findByEmail(email).isPresent()) {
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "Já existe um usuário com este email.");
+            return;
+        }
+
+        // Criação e salvamento do novo usuário
         Usuario novoUsuario = new Usuario();
-        novoUsuario.setNome(txtNome.getText().trim());
-        novoUsuario.setEmail(txtEmail.getText().trim());
-        novoUsuario.setTelefone(txtTelefone.getText().trim());
-        novoUsuario.setSenha(new String(txtPassword.getPassword()));
+        novoUsuario.setNome(nome);
+        novoUsuario.setEmail(email);
+        novoUsuario.setTelefone(telefone);
+        novoUsuario.setSenha(Md5.hash(new String(txtSenha.getPassword())));
         novoUsuario.setNivel(Integer.parseInt((String) cmbNivel.getSelectedItem()));
         novoUsuario.setStatus((String) cmbStatus.getSelectedItem());
-        novoUsuario.setUsos((Integer) spnUsos.getValue());
+        novoUsuario.setUsos(usos == 0 ? null : usos);
 
         usuarioRepository.save(novoUsuario);
         Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_CENTER, "Usuário salvo com sucesso.");
@@ -141,7 +180,7 @@ public class PanelUsuariosCadastro extends JPanel {
         txtNome.setText("");
         txtEmail.setText("");
         txtTelefone.setText("");
-        txtPassword.setText("");
+        txtSenha.setText("");
         cmbNivel.setSelectedIndex(0);
         cmbStatus.setSelectedIndex(0);
         spnUsos.setValue(0);
